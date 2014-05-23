@@ -1,41 +1,55 @@
+
+//IMAGE VARS
 PImage original;
 PImage pieces[];
-int original_x;
-int original_y;
+PImage puzzled[];
 int nRows;
 int nPieces;
 
-void setup(){
-  size(400, 600);
-  nRows = 3;
-  nPieces = nRows*nRows;
+//PUZZLE VARS
+int original_x;
+int original_y;
 
-  original = loadImage("busquets.jpg");
-  original_x = 0;
-  original_y = 0;
-  int delta = (original.width/nRows)*(original.height/nRows);
-  int size = original.width * original.height;
-  original.loadPixels();
-  pieces = new PImage[nPieces];
+
+void setup(){
+  size(400, 600);                       //Window setup
+  nRows = 5;                            //Rows/Columns in the puzzle
+  nPieces = nRows*nRows;                // # of pieces in the puzzle
+
+  original = loadImage("fog.jpg");      //Image to load
   
-  //DESPLAZAMOS PIEZAS H+W^NROWS
+  original.loadPixels();                //Initialize pixels from original image
+  pieces = new PImage[nPieces];         //Initialize vector pieces
+  puzzled = new PImage[nPieces];         //Initialize vector puzzled
+  
+  //original_x = 0;
+  //original_y = 0;
+
+  
+  // SPLITTER CORE - SHIFT PIECES H+W^NROWS
   for(int w = 0 ; w < nRows ; w++){
     for(int h = 0 ; h < nRows ; h++){ 
-        pieces[h+w*nRows] = new PImage(original.width/nRows, original.height/nRows);
+        pieces[h+w*nRows] = new PImage(original.width/nRows, original.height/nRows);        //Initialize every piece
         pieces[h+w*nRows].loadPixels();
-        //DESPLAZAMOS PIXELS 
+        //SHIFT PIXELS 
         int pos = 0;
-        for (int i = original.width/nRows*w; i < original.width/nRows*(w+1); i++) { //HORIZONTAL
-          for (int j = original.width/nRows*h; j < original.height/nRows*(h+1); j++) { //VERTICAL
-          
-            pieces[h+w*nRows].pixels[pos] =  original.pixels[j + i*original.width];
-           
+        for (int i = original.width/nRows*w; i < original.width/nRows*(w+1); i++) {         //Horizontal shift
+          for (int j = original.width/nRows*h; j < original.height/nRows*(h+1); j++) {      //Vertical shift
+            pieces[h+w*nRows].pixels[pos] =  original.pixels[j + i*original.width];         //Save pixel
             pos++;
           } 
         }  
         pieces[h+w*nRows].updatePixels();
     }
   }
+  //Desordenador improvisado
+  /*
+  for(int w = 0 ; w < nRows ; w++){
+    for(int h = 0 ; h < nRows ; h++){ 
+        //image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+        puzzled[w+h*nRows] = pieces[(int)random(nPieces)];
+    } 
+  }*/
   
 }
 
@@ -46,14 +60,11 @@ void draw() {
   original_y = constrain(mouseY-(original.height/2),0, height-original.height);
   }
   //set(original_x, original_y, pieces[0]);
-  image(pieces[0],0*width/nRows,0*height/nRows);
-  image(pieces[1],1*width/nRows,0*height/nRows);
-  image(pieces[2],2*width/nRows,0*height/nRows);
-  image(pieces[3],0*width/nRows,1*height/nRows);
-  image(pieces[4],1*width/nRows,1*height/nRows);
-  image(pieces[5],2*width/nRows,1*height/nRows);
-  image(pieces[6],0*width/nRows,2*height/nRows);
-  image(pieces[7],1*width/nRows,2*height/nRows);
-  image(pieces[8],2*width/nRows,2*height/nRows);
-  
+  for(int w = 0 ; w < nRows ; w++){
+    for(int h = 0 ; h < nRows ; h++){ 
+        //image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+        image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+    } 
+  }  
+      
 }
