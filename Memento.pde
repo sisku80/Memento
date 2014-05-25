@@ -13,7 +13,7 @@ int original_y;
 
 void setup(){
   size(400, 600);                       //Window setup
-  nRows = 5;                            //Rows/Columns in the puzzle
+  nRows = 3;                            //Rows/Columns in the puzzle
   nPieces = nRows*nRows;                // # of pieces in the puzzle
 
   original = loadImage("fog.jpg");      //Image to load
@@ -63,7 +63,8 @@ void draw() {
   for(int w = 0 ; w < nRows ; w++){
     for(int h = 0 ; h < nRows ; h++){ 
         //image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
-        image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+        if(w+h*nRows < nPieces-1)
+          image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
     } 
   }  
       
