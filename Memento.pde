@@ -6,6 +6,9 @@ PImage puzzled[];
 int nRows;
 int nPieces;
 
+ArrayList<Integer> nums = new ArrayList<Integer>();
+ArrayList<Integer> nums_aux = new ArrayList<Integer>();
+
 //PUZZLE VARS
 int original_x;
 int original_y;
@@ -22,6 +25,23 @@ void setup(){
   pieces = new PImage[nPieces];         //Initialize vector pieces
   puzzled = new PImage[nPieces];         //Initialize vector puzzled
   
+  
+  //SCRAMBLE NUMBERS AND SAVE IT ON NUMS[]
+  for(int i = 0; i < nPieces ; i++){
+    nums_aux.add(i);
+    print(nums_aux.get(i) + ", ");
+  }
+  println();
+  for(int i = 0 ; i < nPieces ; i++){
+    
+    int index =  (int)random(nums_aux.size());    
+    nums.add(nums_aux.get(index));
+    print(nums.get(i) + ", ");
+    nums_aux.remove(index);
+    //println(nums.get(i));
+  }
+  
+  /*-----------------------*/
   //original_x = 0;
   //original_y = 0;
 
@@ -42,15 +62,7 @@ void setup(){
         pieces[h+w*nRows].updatePixels();
     }
   }
-  //Desordenador improvisado
-  /*
-  for(int w = 0 ; w < nRows ; w++){
-    for(int h = 0 ; h < nRows ; h++){ 
-        //image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
-        puzzled[w+h*nRows] = pieces[(int)random(nPieces)];
-    } 
-  }*/
-  
+    
 }
 
 void draw() {
@@ -63,8 +75,8 @@ void draw() {
   for(int w = 0 ; w < nRows ; w++){
     for(int h = 0 ; h < nRows ; h++){ 
         //image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
-        if(w+h*nRows < nPieces-1)
-          image(pieces[w+h*nRows],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+        if(nums.get(w+h*nRows) < nPieces-1)
+          image(pieces[nums.get(w+h*nRows)],  20+ w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
     } 
   }  
       
