@@ -44,7 +44,7 @@ public void setup() {
 
 void setupPuzzle(PImage photo){
     //PUZZLE SETUP--------------------------
-    nRows = 3;                // Rows/Columns in the puzzle
+    nRows = 2;                // Rows/Columns in the puzzle
     nPieces = nRows * nRows;  // # of pieces in the puzzle
     
     original = photo;// Image to load
@@ -84,6 +84,7 @@ void setupPuzzle(PImage photo){
     //DRAW FOR THE MENU
     //update(mouseX, mouseY);
     background(bg);
+    if(menu != 4){
     stroke(0);
     fill(azulOscuro);
     textSize(48);
@@ -92,10 +93,11 @@ void setupPuzzle(PImage photo){
     text("Memento", width/10, height/5);
     textSize(10);
     fill(azul);
-    text("by Francesc Ramirez", width/10, height/4.5);
-    text("     Luis Prieto", width/10, height/4);
-    text("     Ricardo Saldaña", width/10, height/3.6);
     
+      text("by Francesc Ramirez", width/10, height/4.5);
+      text("     Luis Prieto", width/10, height/4);
+      text("     Ricardo Saldaña", width/10, height/3.6);
+    }
   if (menu == 0){
    
     rect(width/11, height/2, width*0.8, height*0.22);//start
@@ -135,37 +137,41 @@ void setupPuzzle(PImage photo){
    if (menu == 4){
     //DRAW FOR PUZZLE-------------------------------------
     if(flag_back == true){
-     background(255,0,0);/////////////YOU WIN
-    }
-    /*if (mousePressed) {
-      overPieza();
-    }*/
-    // set(original_x, original_y, pieces[0]);
-    for (int w = 0; w < nRows; w++) {
-      for (int h = 0; h < nRows; h++) {
-        // image(pieces[w+h*nRows], 20+
-        // w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
-        // if(nums.get(w+h*nRows) < nPieces-1)
-          
-        image(pieces[nums.get(w + h * nRows)], 
-            10+w*( original.width) / nRows, 
-            10+h* (original.height) / nRows);
-            //20 + w*(20 + original.width) / nRows + (width/nRows), 
-            //20 + h* (20 + original.height) / nRows + (heightnRows));
+      textSize(48);
+      image(original,10,(height/4));//background(255,0,0);/////////////YOU WIN
+      fill(rojo);
+      text("YOU WIN!", width/10, height/4.5);
+      fill(azul);
+    } else{
+      /*if (mousePressed) {
+        overPieza();
+      }*/
+      // set(original_x, original_y, pieces[0]);
+      for (int w = 0; w < nRows; w++) {
+        for (int h = 0; h < nRows; h++) {
+          // image(pieces[w+h*nRows], 20+
+          // w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
+          // if(nums.get(w+h*nRows) < nPieces-1)
             
-        if(selectedPiece == w + h*nRows){
-          noFill();
-          strokeWeight(2);
-          stroke(0,255,0);
-          rect( 10+w*( original.width) / nRows, 10+h* (original.height) / nRows, original.width/nRows-2, original.height/nRows-2);
-          fill(azul);
-          strokeWeight(1);
-          stroke(0);
+          image(pieces[nums.get(w + h * nRows)], 
+              10+w*( original.width) / nRows, 
+              (height/4)+h* (original.height) / nRows);
+              //20 + w*(20 + original.width) / nRows + (width/nRows), 
+              //20 + h* (20 + original.height) / nRows + (heightnRows));
+              
+          if(selectedPiece == w + h*nRows){
+            noFill();
+            strokeWeight(2);
+            stroke(0,255,0);
+            rect( 10+w*( original.width) / nRows, (height/4)+h* (original.height) / nRows, original.width/nRows-2, original.height/nRows-2);
+            fill(azul);
+            strokeWeight(1);
+            stroke(0);
+          }
         }
       }
     }
-   
-    //END OF DRAW PUZZLE ------------------------------
+      //END OF DRAW PUZZLE ------------------------------
    }
    if (menu != 0){
     textSize(15);
@@ -225,38 +231,37 @@ void setupPuzzle(PImage photo){
       
     
    else if (menu == 4){
-    if(overRect(10,10,10+original.width,10+original.height)){
-      int over = overPieza();
-      println(over);
-      if(selectedPiece == -1){
-        selectedPiece = over;
-      } else{
-        flip(selectedPiece, over);
-        println("Flip: "+ selectedPiece +"," + over);
-        selectedPiece = -1;
-      }
-      flag_back = true;
-      for(int c = 0; c < nPieces ; c++){
-        
-        if(nums_aux.get(c) != nums.get(c)){
-          flag_back = false;
+    if(flag_back == false){
+       if(overRect(10,(height/4),10+original.width,(height/4)+original.height)){
+        int over = overPieza();
+        println(over);
+        if(selectedPiece == -1){
+          selectedPiece = over;
+        } else{
+          flip(selectedPiece, over);
+          println("Flip: "+ selectedPiece +"," + over);
+          selectedPiece = -1;
+        }
+        flag_back = true;
+        for(int c = 0; c < nPieces ; c++){
+          
+          if(nums_aux.get(c) != nums.get(c)){
+            flag_back = false;
+          }
         }
       }
     }
-  }
+   }
 }
-
-
-
 
 int overPieza(){
   int over_p = 0;
   for (int w = 0; w < nRows; w++) {
     for (int h = 0; h < nRows; h++) {
-      if (  mouseX >= (w*( original.width) / nRows) && 
-          mouseX <= (w*( original.width) / nRows) + (original.width / nRows) && 
-          mouseY >= (h* (original.height) / nRows) && 
-          mouseY <= (h* (original.height) / nRows) + (original.width / nRows)){
+      if (  mouseX >= (10+ w*( original.width) / nRows) && 
+          mouseX <= (10 + w*( original.width) / nRows) + (original.width / nRows) && 
+          mouseY >= ((height/4) + h* (original.height) / nRows) && 
+          mouseY <= ((height/4) + h* (original.height) / nRows) + (original.width / nRows)){
             over_p = w+h*nRows;   
       }
     }
