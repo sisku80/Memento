@@ -1,4 +1,18 @@
-// IMAGE VARS
+
+//MENU VARS--------------------------------
+PImage bg;
+color azul = color(0, 102, 153);
+color azulOscuro = color(20,20,100);
+color verde = color(20,120,0);
+color rojo = color(200,0,0);
+int rectOver = 0;
+boolean menu = false;
+
+//----------------------------------------
+
+//PUZZLE VARS-----------------------------
+
+  // IMAGE VARS
   PImage original;
   PImage pieces[];
   PImage puzzled[];
@@ -9,21 +23,25 @@
   ArrayList<Integer> nums = new ArrayList<Integer>();
   ArrayList<Integer> nums_aux = new ArrayList<Integer>();
 
-  // PUZZLE VARS
-  int original_x;
-  int original_y;
   
 
 public void setup() {
-    size(300, 450); // Window setup
-    nRows = 3; // Rows/Columns in the puzzle
-    nPieces = nRows * nRows; // # of pieces in the puzzle
+    
+    size(300, 450);
+    
+    //MENU SETUP ---------------------------
+    ellipseMode(CENTER);
+    bg = loadImage("bg22.jpg");
+  
+    //PUZZLE SETUP--------------------------
+    nRows = 3;                // Rows/Columns in the puzzle
+    nPieces = nRows * nRows;  // # of pieces in the puzzle
 
     original = loadImage("fog.jpg"); // Image to load
     original.resize(280, 280);
-    original.loadPixels(); // Initialize pixels from original image
-    pieces = new PImage[nPieces]; // Initialize vector pieces
-    puzzled = new PImage[nPieces]; // Initialize vector puzzled
+    original.loadPixels();           // Initialize pixels from original image
+    pieces = new PImage[nPieces];    // Initialize vector pieces
+    puzzled = new PImage[nPieces];   // Initialize vector puzzled
     selectedPiece = -1;
     flag_back = false;
     // SCRAMBLE NUMBERS AND SAVE IT ON NUMS[]
@@ -47,8 +65,7 @@ public void setup() {
     }
 
     /*-----------------------*/
-    // original_x = 0;
-    // original_y = 0;
+
 
     // SPLITTER CORE - SHIFT PIECES H+W^NROWS
     for (int w = 0; w < nRows; w++) {
@@ -73,6 +90,47 @@ public void setup() {
   }
 
   public void draw() {
+   
+   //DRAW FOR THE MENU
+   update(mouseX, mouseY);
+  background(bg);
+  fill(azulOscuro);
+  textSize(48);
+  text("Puzzled", width/15, height/11);
+  textSize(56);
+  text("Memento", width/10, height/5);
+  textSize(10);
+  fill(azul);
+  text("by Francesc Ramirez", width/10, height/4.5);
+  text("     Luis Prieto", width/10, height/4);
+  text("     Ricardo Saldaña", width/10, height/3.6);
+  fill(azul);
+  
+  if (menu == false){
+    stroke(0);
+    rect(width/11, height/2, width*0.8, height*0.22);
+    textSize(56);
+    fill(azulOscuro);
+    //-----------------------------------------//
+    text("Start", width/2 -70, height/2+70);
+    fill(azul);
+  }
+  else{
+    
+    stroke(0);
+    rect(width/2 - 125, height/2, 250, 80);
+    rect(width/2 - 125, height/2+100, 250, 80);
+   
+    fill(azulOscuro);
+    textSize(40);
+    text("Take Photo", width/2-110, height/2+60);
+    textSize(30);
+    text("Choose Picture", width/2-110, height/2+150);
+    fill(azul);
+  }
+   
+   
+    //DRAW FOR PUZZLE-------------------------------------
     if(flag_back == false)
       background(255);
     else
@@ -93,7 +151,7 @@ public void setup() {
             //20 + h* (20 + original.height) / nRows + (heightnRows));
       }
     }
-
+    //END OF DRAW PUZZLE -------------------------------
   }
 
   public void mouseClicked(){
@@ -122,7 +180,7 @@ public void setup() {
   }
 
   int overPieza(){
-    int over_p = 999;
+    int over_p = 0;
     for (int w = 0; w < nRows; w++) {
       for (int h = 0; h < nRows; h++) {
         if (  mouseX >= (w*( original.width) / nRows) && 
@@ -138,6 +196,40 @@ public void setup() {
     
   }
 
+void update(int x, int y) {
+  if (menu==false){
+    if ( overRect(width/2 - 125, height/2, 250, 110)) {
+      rectOver = 1;
+    } else {
+      rectOver = 0;
+    }
+  }
+  else {
+   if ( overRect(width/2 - 125, height/2, 250, 80)) {
+      rectOver = 2;
+   } else if( overRect(width/2 - 125, height/2+100, 250, 80)){
+     rectOver = 3;
+    } else {
+     rectOver = 0;
+    }
+  }
+}
+
+void mousePressed() {
+  if (rectOver == 1) {
+    println("Start");
+    menu = true;
+  }
+  else if (rectOver == 2) {
+    println("Take Photo");
+    menu = true;
+  }
+  else if (rectOver == 3) {
+    println("Choose Picture");
+    menu = true;
+  }
+}
+
 
 boolean overRect(int x, int y, int width, int height)  {
     if (mouseX >= x && mouseX <= x+width && 
@@ -147,6 +239,7 @@ boolean overRect(int x, int y, int width, int height)  {
       return false;
     }
   }
+  
 void flip(int a, int b){
   int aux;
   aux = nums.get(a);
