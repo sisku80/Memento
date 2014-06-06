@@ -7,6 +7,9 @@ color verde = color(20,120,0);
 color rojo = color(200,0,0);
 int rectOver = 0;
 int menu = 0;
+ArrayList<Integer> pmenu = new ArrayList<Integer>();
+PImage img1, img2, img3;
+
 
 //----------------------------------------
 
@@ -31,40 +34,28 @@ public void setup() {
     
     //MENU SETUP ---------------------------
     ellipseMode(CENTER);
-    bg = loadImage("bg22.jpg");
-  
+    bg = loadImage("bg.jpg");
+    img1 = loadImage("mountain.jpg");
+    img2 = loadImage("landscape.jpg");
+    img3 = loadImage("oscars.jpg");
+    
+}
+
+
+void setupPuzzle(PImage photo){
     //PUZZLE SETUP--------------------------
     nRows = 3;                // Rows/Columns in the puzzle
     nPieces = nRows * nRows;  // # of pieces in the puzzle
-
-    original = loadImage("fog.jpg"); // Image to load
+    
+    original = photo;// Image to load
     original.resize(280, 280);
     original.loadPixels();           // Initialize pixels from original image
     pieces = new PImage[nPieces];    // Initialize vector pieces
     puzzled = new PImage[nPieces];   // Initialize vector puzzled
     selectedPiece = -1;
     flag_back = false;
-    // SCRAMBLE NUMBERS AND SAVE IT ON NUMS[]
-    for (int i = 0; i < nPieces; i++) {
-      nums_aux.add(i);
-      print(nums_aux.get(i) + ", ");
-    }
-    println();
-    for (int i = 0; i < nPieces; i++) {
-
-      int index = (int) random(nums_aux.size());
-      nums.add(nums_aux.get(index));
-      print(nums.get(i) + ", ");
-      nums_aux.remove(index);
-      // println(nums.get(i));
-
-    }
-    for (int i = 0; i < nPieces; i++) {
-      nums_aux.add(i);
-      print(nums_aux.get(i) + ", ");
-    }
-
-    /*-----------------------*/
+    
+    scrambleNums();
 
 
     // SPLITTER CORE - SHIFT PIECES H+W^NROWS
@@ -86,14 +77,14 @@ public void setup() {
         pieces[h + w * nRows].updatePixels();
       }
     }
-
-  }
+}
 
   public void draw() {
   
     //DRAW FOR THE MENU
     //update(mouseX, mouseY);
     background(bg);
+    stroke(0);
     fill(azulOscuro);
     textSize(48);
     text("Puzzled", width/15, height/11);
@@ -104,37 +95,48 @@ public void setup() {
     text("by Francesc Ramirez", width/10, height/4.5);
     text("     Luis Prieto", width/10, height/4);
     text("     Ricardo Saldaña", width/10, height/3.6);
-    fill(azul);
-  
+    
   if (menu == 0){
-    stroke(0);
-    rect(width/11, height/2, width*0.8, height*0.22);
+   
+    rect(width/11, height/2, width*0.8, height*0.22);//start
     textSize(56);
     fill(azulOscuro);
-    //-----------------------------------------//
-    text("Start", width/2 -70, height/2+70);
+    text("Start", width/4, height/1.55);
     fill(azul);
   }
   else if (menu == 1){
+
     
-    stroke(0);
-    rect(width/2 - 125, height/2, 250, 80);
-    rect(width/2 - 125, height/2+100, 250, 80);
+    rect(width/11, height/2, width*0.8, height*0.15);//take photo
+    rect(width/11, height/1.4, width*0.8, height*0.15);//Choose Picture
    
     fill(azulOscuro);
     textSize(40);
-    text("Take Photo", width/2-110, height/2+60);
+    text("Take Photo", width/8, height/1.65);
     textSize(30);
-    text("Choose Picture", width/2-110, height/2+150);
+    text("Choose Picture", width/8, height/1.23);
     fill(azul);
   }
+  else if (menu == 3){
+    
+  
+    image(img1, width/13, height/3, height*0.15, height*0.15);//mountain
+    image(img2, width/13, height/2, height*0.15, height*0.15);//landscape
+    image(img3, width/13, height/1.5, height*0.15, height*0.15);//oscars
    
-   if (menu == 2){
+    /*fill(azulOscuro);
+    textSize(40);
+    text("Take Photo", width/8, height/1.65);
+    textSize(30);
+    text("Choose Picture", width/8, height/1.23);
+    fill(azul);*/
+  }
+
+   if (menu == 4){
     //DRAW FOR PUZZLE-------------------------------------
-    if(flag_back == false)
-      background(255);
-    else
-      background(255,0,0);
+    if(flag_back == true){
+     background(255,0,0);/////////////YOU WIN
+    }
     /*if (mousePressed) {
       overPieza();
     }*/
@@ -144,38 +146,85 @@ public void setup() {
         // image(pieces[w+h*nRows], 20+
         // w*(20+original.width)/nRows,20+h*(20+original.height)/nRows);
         // if(nums.get(w+h*nRows) < nPieces-1)
-        image(  pieces[nums.get(w + h * nRows)], 
+          
+        image(pieces[nums.get(w + h * nRows)], 
             10+w*( original.width) / nRows, 
             10+h* (original.height) / nRows);
             //20 + w*(20 + original.width) / nRows + (width/nRows), 
             //20 + h* (20 + original.height) / nRows + (heightnRows));
+            
+        if(selectedPiece == w + h*nRows){
+          noFill();
+          strokeWeight(2);
+          stroke(0,255,0);
+          rect( 10+w*( original.width) / nRows, 10+h* (original.height) / nRows, original.width/nRows-2, original.height/nRows-2);
+          fill(azul);
+          strokeWeight(1);
+          stroke(0);
+        }
       }
     }
    
     //END OF DRAW PUZZLE ------------------------------
    }
-  }
+   if (menu != 0){
+    textSize(15);
+    rect(0, height/1.1, width/5, height/11);
+    fill(azulOscuro);
+    text("< Back", 0, height/1.04);
+    fill(azul);
+   }
+}
+
 
   public void mousePressed(){
-    
+    if (menu !=0){//Atras
+      if (overRect(0, height/1.1, width/5, height/11)) {
+        println("Atras");
+        menu = pmenu.get(pmenu.size()-1);
+        pmenu.remove(pmenu.size()-1);
+      } 
+    }
     if (menu == 0){ //Start
-      if ( overRect(width/2 - 125, height/2, 250, 110)) {
+      if (overRect(width/11, height/2, width*0.8, height*0.22)) {
         println("Start");
+        pmenu.add(menu);
         menu = 1;
       } 
     }
   
     else if (menu == 1){//Take photo or Choose Picture
-     if ( overRect(width/2 - 125, height/2, 250, 80)) {
-         println("Take Photo");
+     if (overRect(width/11, height/2, width*0.8, height*0.15)) {//take photo
+        println("Take Photo");
+        pmenu.add(menu);
         menu = 2;
-     } else if( overRect(width/2 - 125, height/2+100, 250, 80)){
-      println("Choose Picture");
-      menu = 3;
+     } else if( overRect(width/11, height/1.4, width*0.8, height*0.15)){//Choose Picture
+        println("Choose Picture");
+        pmenu.add(menu);
+        menu = 3;
       }
     }
+     else if (menu == 3){//Take photo or Choose Picture
+       if (overRect(width/13, height/3, height*0.15, height*0.15)) {//take photo
+          println("mountain");
+          pmenu.add(menu);
+          menu = 4;
+          setupPuzzle(img1);
+       } else if( overRect(width/13, height/2, height*0.15, height*0.15)){//Choose Picture
+          println("landscape");
+          pmenu.add(menu);
+          menu = 4;
+          setupPuzzle(img2);
+       }else if( overRect(width/13, height/1.5, height*0.15, height*0.15)){//Choose Picture
+          println("oscars");
+          pmenu.add(menu);
+          menu = 4;
+          setupPuzzle(img3);
+          }
+        }
+      
     
-   else if (menu == 2){
+   else if (menu == 4){
     if(overRect(10,10,10+original.width,10+original.height)){
       int over = overPieza();
       println(over);
@@ -183,10 +232,8 @@ public void setup() {
         selectedPiece = over;
       } else{
         flip(selectedPiece, over);
-        
         println("Flip: "+ selectedPiece +"," + over);
         selectedPiece = -1;
-        
       }
       flag_back = true;
       for(int c = 0; c < nPieces ; c++){
@@ -195,34 +242,29 @@ public void setup() {
           flag_back = false;
         }
       }
-      
     }
   }
-  }
-
-  int overPieza(){
-    int over_p = 0;
-    for (int w = 0; w < nRows; w++) {
-      for (int h = 0; h < nRows; h++) {
-        if (  mouseX >= (w*( original.width) / nRows) && 
-            mouseX <= (w*( original.width) / nRows) + (original.width / nRows) && 
-            mouseY >= (h* (original.height) / nRows) && 
-            mouseY <= (h* (original.height) / nRows) + (original.width / nRows)){
-              over_p = w+h*nRows;
-             
-        }
-      }
-    }
-    return over_p;
-    
-  }
-
-void update(int x, int y) {
-  
 }
 
 
-boolean overRect(int x, int y, int width, int height)  {
+
+
+int overPieza(){
+  int over_p = 0;
+  for (int w = 0; w < nRows; w++) {
+    for (int h = 0; h < nRows; h++) {
+      if (  mouseX >= (w*( original.width) / nRows) && 
+          mouseX <= (w*( original.width) / nRows) + (original.width / nRows) && 
+          mouseY >= (h* (original.height) / nRows) && 
+          mouseY <= (h* (original.height) / nRows) + (original.width / nRows)){
+            over_p = w+h*nRows;   
+      }
+    }
+  }
+  return over_p;
+}
+
+boolean overRect(float x, float y, float width, float height)  {
     if (mouseX >= x && mouseX <= x+width && 
         mouseY >= y && mouseY <= y+height) {
       return true;
@@ -236,5 +278,32 @@ void flip(int a, int b){
   aux = nums.get(a);
   nums.set(a,nums.get(b));
   nums.set(b,aux);
-  
 }
+
+void scrambleNums(){
+// SCRAMBLE NUMBERS AND SAVE IT ON NUMS[]
+    nums_aux.clear();
+    for (int i = 0; i < nPieces; i++) {
+      nums_aux.add(i);
+      print(nums_aux.get(i) + ", ");
+    }
+    println();
+    nums.clear();
+    for (int i = 0; i < nPieces; i++) {
+
+      int index = (int) random(nums_aux.size());
+      nums.add(nums_aux.get(index));
+      print(nums.get(i) + ", ");
+      nums_aux.remove(index);
+      // println(nums.get(i));
+
+    }
+    nums_aux.clear();
+    for (int i = 0; i < nPieces; i++) {
+      nums_aux.add(i);
+    }
+
+    /*-----------------------*/  
+}
+
+
