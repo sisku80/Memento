@@ -6,7 +6,7 @@ color azulOscuro = color(20,20,100);
 color verde = color(20,120,0);
 color rojo = color(200,0,0);
 int rectOver = 0;
-boolean menu = false;
+int menu = 0;
 
 //----------------------------------------
 
@@ -90,23 +90,23 @@ public void setup() {
   }
 
   public void draw() {
-   
-   //DRAW FOR THE MENU
-   update(mouseX, mouseY);
-  background(bg);
-  fill(azulOscuro);
-  textSize(48);
-  text("Puzzled", width/15, height/11);
-  textSize(56);
-  text("Memento", width/10, height/5);
-  textSize(10);
-  fill(azul);
-  text("by Francesc Ramirez", width/10, height/4.5);
-  text("     Luis Prieto", width/10, height/4);
-  text("     Ricardo Saldaña", width/10, height/3.6);
-  fill(azul);
   
-  if (menu == false){
+    //DRAW FOR THE MENU
+    //update(mouseX, mouseY);
+    background(bg);
+    fill(azulOscuro);
+    textSize(48);
+    text("Puzzled", width/15, height/11);
+    textSize(56);
+    text("Memento", width/10, height/5);
+    textSize(10);
+    fill(azul);
+    text("by Francesc Ramirez", width/10, height/4.5);
+    text("     Luis Prieto", width/10, height/4);
+    text("     Ricardo Saldaña", width/10, height/3.6);
+    fill(azul);
+  
+  if (menu == 0){
     stroke(0);
     rect(width/11, height/2, width*0.8, height*0.22);
     textSize(56);
@@ -115,7 +115,7 @@ public void setup() {
     text("Start", width/2 -70, height/2+70);
     fill(azul);
   }
-  else{
+  else if (menu == 1){
     
     stroke(0);
     rect(width/2 - 125, height/2, 250, 80);
@@ -129,7 +129,7 @@ public void setup() {
     fill(azul);
   }
    
-   
+   if (menu == 2){
     //DRAW FOR PUZZLE-------------------------------------
     if(flag_back == false)
       background(255);
@@ -151,11 +151,31 @@ public void setup() {
             //20 + h* (20 + original.height) / nRows + (heightnRows));
       }
     }
-    //END OF DRAW PUZZLE -------------------------------
+   
+    //END OF DRAW PUZZLE ------------------------------
+   }
   }
 
-  public void mouseClicked(){
+  public void mousePressed(){
     
+    if (menu == 0){ //Start
+      if ( overRect(width/2 - 125, height/2, 250, 110)) {
+        println("Start");
+        menu = 1;
+      } 
+    }
+  
+    else if (menu == 1){//Take photo or Choose Picture
+     if ( overRect(width/2 - 125, height/2, 250, 80)) {
+         println("Take Photo");
+        menu = 2;
+     } else if( overRect(width/2 - 125, height/2+100, 250, 80)){
+      println("Choose Picture");
+      menu = 3;
+      }
+    }
+    
+   else if (menu == 2){
     if(overRect(10,10,10+original.width,10+original.height)){
       int over = overPieza();
       println(over);
@@ -178,6 +198,7 @@ public void setup() {
       
     }
   }
+  }
 
   int overPieza(){
     int over_p = 0;
@@ -197,37 +218,7 @@ public void setup() {
   }
 
 void update(int x, int y) {
-  if (menu==false){
-    if ( overRect(width/2 - 125, height/2, 250, 110)) {
-      rectOver = 1;
-    } else {
-      rectOver = 0;
-    }
-  }
-  else {
-   if ( overRect(width/2 - 125, height/2, 250, 80)) {
-      rectOver = 2;
-   } else if( overRect(width/2 - 125, height/2+100, 250, 80)){
-     rectOver = 3;
-    } else {
-     rectOver = 0;
-    }
-  }
-}
-
-void mousePressed() {
-  if (rectOver == 1) {
-    println("Start");
-    menu = true;
-  }
-  else if (rectOver == 2) {
-    println("Take Photo");
-    menu = true;
-  }
-  else if (rectOver == 3) {
-    println("Choose Picture");
-    menu = true;
-  }
+  
 }
 
 
@@ -247,4 +238,3 @@ void flip(int a, int b){
   nums.set(b,aux);
   
 }
-
